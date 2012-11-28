@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block head %}
+        <title>
+            database info
+        </title>
+{% endblock %}
+{% block content %}
+        The data for resource {{ r }} at building {{ b }} are
+        <table class="table table-striped table-bordered table-condensed"> 
+            <tr>
+                <th>Timestamp</th>
+                <th>Value</th>
+            </tr>
+            {% for element in data %}
+            <tr>
+                <th>{{ element[0] }}</th>
+                <th>{{ element[1] }}</th>
+            </tr>
+            {% endfor %}
+        </table>
+{% endblock %}

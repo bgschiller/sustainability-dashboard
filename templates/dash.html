@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+                {% block head %}
+		<title>Sustainability Dashboard</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="WWU Sustainability Dashboard">
+		<meta name="author" content="Schiller, Dyche, Caci, Hajy">
+                {% endblock %}
+                {% block headjavascript %} 
+			<script type="text/javascript">
+                            $(function() { 
+                                    //TODO: This url should be /data/<resource>/<building>.json, with resource and building filled in from the user's clicky choice
+		$.getJSON('http://www.highcharts.com/samples/data/jsonp.php?filename=aapl-c.json&callback=?', function(data) { 
+
+			// Create the chart
+			window.chart = new Highcharts.StockChart({
+				chart : {
+					renderTo : 'container'
+				},
+
+				rangeSelector : {
+					selected : 1
+				},
+
+				title : {
+					text : 'AAPL Stock Price'
+				},
+
+				series : [{
+					name : 'AAPL Stock Price',
+					data : data,
+					type : 'area',
+					threshold : null,
+					tooltip : {
+						valueDecimals : 2
+					},
+					fillColor : {
+						linearGradient : {
+							x1: 0, 
+							y1: 0, 
+							x2: 0, 
+							y2: 1
+						},
+						stops : [[0, Highcharts.getOptions().colors[0]], [1, 'rgba(0,0,0,0)']]
+					}
+				}]
+			});
+		});
+	});
+
+			</script>
+                        {% endblock %}
+    {% block content %}
+      <h1>Bootstrap starter template</h1>
+      <p>Use this document as a way to quick start any new project.<br> All you get is this message and a barebones HTML document.</p>
+      <!--TODO: replace this table with some CSS -->
+<table width="200" border="1">
+  <tr>
+    <th scope="row">&nbsp;</th>
+    <td><table width="700" border="1">
+  <tr>
+      {% for resource in resources %}
+      <th scope="col">{{ resource.capitalize() }}</th> <!--TODO: add an onclick attribute to these and a javascript function to call on /data/<resource>/<building>.json -->
+      {% endfor %}
+  </tr>
+</table></td>
+  </tr>
+  <tr>
+    <th scope="row"><table width="178" border="1">
+            {% for b, name in buildings %}
+        <tr>
+            <th scope="row">{{ '{} ({})'.format(name, b.upper()) }}</th>
+        </tr>
+        {% endfor %}
+        <tr>
+          <th height="423" scope="row">&nbsp;</th>
+    </tr>
+      </table></th>
+    <td>
+
+<div id="container" style="height: 400px; min-width: 400px"></div>
+<!-- /container --></td>
+  </tr>
+</table>
+    {% endblock %}
+    {% block javascript %}
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/static/js/bootstrap.js"></script>
+    <script src="/static/js/jquery.js"></script>
+<script src="/static/js/highstock.js"></script>
+<script src="/static/js/modules/exporting.js"></script>
+    {% endblock %}
