@@ -7,9 +7,10 @@
                 {% endblock %}
                 {% block headjavascript %} 
 			<script type="text/javascript">
+                            currResource = 'water';
+                            currBuilding = 'bh';
                             $(function() { 
-                                    //TODO: This url should be /data/<resource>/<building>.json, with resource and building filled in from the user's clicky choice
-		$.getJSON('http://www.highcharts.com/samples/data/jsonp.php?filename=aapl-c.json&callback=?', function(data) { 
+                        $.getJSON('/data/'+currResource + '/' + currBuilding + '.json', function(data) { 
 
 			// Create the chart
 			window.chart = new Highcharts.StockChart({
@@ -22,11 +23,11 @@
 				},
 
 				title : {
-					text : 'AAPL Stock Price'
+					text : currResource + ' usage in ' +  currBuilding
 				},
 
 				series : [{
-					name : 'AAPL Stock Price',
+					name :  currBuilding+ ', ' + currResource,
 					data : data,
 					type : 'area',
 					threshold : null,
@@ -53,39 +54,38 @@
       <h1>Bootstrap starter template</h1>
       <p>Use this document as a way to quick start any new project.<br> All you get is this message and a barebones HTML document.</p>
       <!--TODO: replace this table with some CSS -->
-<table width="200" border="1">
-  <tr>
-    <th scope="row">&nbsp;</th>
-    <td><table width="700" border="1">
-  <tr>
-      {% for resource in resources %}
-      <th scope="col">{{ resource.capitalize() }}</th> <!--TODO: add an onclick attribute to these and a javascript function to call on /data/<resource>/<building>.json -->
-      {% endfor %}
-  </tr>
-</table></td>
-  </tr>
-  <tr>
-    <th scope="row"><table width="178" border="1">
-            {% for b, name in buildings %}
-        <tr>
-            <th scope="row">{{ '{} ({})'.format(name, b.upper()) }}</th>
-        </tr>
-        {% endfor %}
-        <tr>
-          <th height="423" scope="row">&nbsp;</th>
-    </tr>
-      </table></th>
-    <td>
 
-<div id="container" style="height: 400px; min-width: 400px"></div>
-<!-- /container --></td>
-  </tr>
-</table>
+<div class="container-fluid hero-unit">
+  <div class="row-fluid">
+<div class="navbar">
+      <div class="navbar-inner">
+	<a class="brand" href="#">BALLER</a>
+	<ul class="nav">
+	  {% for resource in resources %}
+          <li><a href="javascript:void(0)" onclick="currResource='{{ resource }}'; updateGraph();">{{ resource.capitalize() }}</a></li> <!--TODO: add an onclick attribute to these and a javascript function to call on /data/<resource>/<building>.json -->
+	  {% endfor %}
+	</ul>
+      </div> <!-- navbar -->
+</div> <!-- navbar inner -->
+  </div> <!-- row -->
+  <div class="row-fluid">
+    <div class="span3" style="min-height:0">
+    <ul class="nav nav-list">
+      {% for b, name in buildings %}
+      <li><a href="javascript:void(0)" onclick="currBuilding='{{ b }}'; updateGraph();">{{ '{} ({})'.format(name, b.upper()) }}</a></li>
+      {% endfor %}
+    </ul>
+    </div> <!-- sidebar -->
+    <div class="span9" id="container" style="position:relative; display:block; height:100%; min-height:0;">
+    </div>
+  </div> <!-- row -->
+</div> <!-- container -->
     {% endblock %}
     {% block javascript %}
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/static/js/dash.js"></script>
     <script src="/static/js/bootstrap.js"></script>
     <script src="/static/js/jquery.js"></script>
 <script src="/static/js/highstock.js"></script>

@@ -2,6 +2,7 @@ from flask import Flask, render_template, jsonify, make_response
 import logging
 import traceback
 import json
+import random
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -35,7 +36,9 @@ def dashboard():
 @app.route('/data/<resource>/<building>/')
 def query_database(resource, building, fmt='html'):
     try: #it can be a headache trying to debug flask. This is something I took to doing when I was using it. Notice the traceback call in the except clause.
-        data = map(list,zip(range(0,8), [2,4,6,1,5,11,8,12])) #todo: we should get the actual data instead of these numbers i just made up.
+        # [ms since UNIX epoch, value]
+        data = random_data() #todo: we should get the actual data instead of these numbers i just made up.
+        logger.info(data)
         logger.info('someone asked for {} at {} in format {}'.format(resource,building,fmt))
         if fmt == 'html':
             return render_template('data.html', r=resource, b=building, data=data)
@@ -56,6 +59,15 @@ def query_database(resource, building, fmt='html'):
         msg = 'Error occurred in query_database: {}. Traceback:\n{}'.format(e, traceback.format_exc())
         logger.error(msg)
         return make_response('<pre>' + msg + '</pre>', 500) # the <pre> tag preserves newlines.
+
+def random_data():
+    num_points = random.randint(10,50)
+    seq = (sum(n_dice_rolls(6)) for _ in xrange(num_points))
+    return map(list, enumerate(seq))
+
+def n_dice_rolls(n):
+    dice_size = 12
+    return map(lambda _: random.randint(1,dice_size), range(n))
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
